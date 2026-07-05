@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payout Match — Know exactly why your Shopify payout never matches your bank</title>
+<meta name="description" content="See which fees, refunds and adjustments make up every Shopify + Stripe payout. Flat $29/month. No accountant, no QuickBooks.">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Your Shopify payout never matches your bank. Now you'll know why.">
+<meta property="og:description" content="Every deposit broken down line by line: sales, fees, refunds, adjustments. Flat $29/month. No accountant, no QuickBooks.">
+<meta property="og:url" content="https://ruslansamets-cell.github.io/payout-match/">
+<meta property="og:image" content="https://ruslansamets-cell.github.io/payout-match/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Your Shopify payout never matches your bank. Now you'll know why.">
+<meta name="twitter:description" content="Every deposit broken down line by line. Flat $29/month.">
+<meta name="twitter:image" content="https://ruslansamets-cell.github.io/payout-match/og.png">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23127A5B'/%3E%3Cpath d='M16 22h32M16 32h24M16 42h28' stroke='%23fff' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FFFFFF;
+    --band:#F4F6F5;
+    --card:#FFFFFF;
+    --ink:#1A222B;
+    --ink-soft:#49535D;
+    --ink-faint:#7C858E;
+    --line:#DEE3E2;
+    --line-strong:#C6CDCB;
+    --money:#127A5B;
+    --money-soft:#E3F0EA;
+    --warn:#A9560F;
+    --warn-soft:#F6EADC;
+    --radius:12px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Segoe UI",-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:'Bitter',Georgia,serif;font-weight:600;line-height:1.14}
+  .mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+
+  /* nav */
+  nav{border-bottom:1px solid var(--line);background:var(--paper)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Bitter',Georgia,serif;font-weight:600;font-size:18px;color:var(--ink);text-decoration:none}
+  .brand .dot{width:22px;height:22px;border-radius:6px;background:var(--money);position:relative;flex:none}
+  .brand .dot::after{content:"";position:absolute;left:5px;right:5px;top:9px;height:2px;background:#fff;box-shadow:0 4px 0 var(--money),0 -4px 0 var(--money)}
+  .nav-links{display:flex;align-items:center;gap:22px}
+  .nav-links a{font-size:15px;color:var(--ink-soft);text-decoration:none}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-cta{font-size:15px;font-weight:600;color:var(--ink) !important;border:1px solid var(--line-strong);padding:8px 16px;border-radius:9px;transition:background .15s}
+  .nav-cta:hover{background:var(--band)}
+
+  /* hero */
+  .hero{padding:72px 0 60px}
+  .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+  .eyebrow{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--money);background:var(--money-soft);padding:5px 11px;border-radius:6px;margin-bottom:22px}
+  h1{font-size:42px;margin-bottom:20px}
+  .lede{font-size:19px;color:var(--ink-soft);margin-bottom:32px;max-width:38ch}
+  .cta-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .btn-primary{background:var(--money);color:#fff;text-decoration:none;font-weight:600;font-size:16px;padding:14px 26px;border-radius:10px;display:inline-flex;align-items:center;gap:9px;transition:background .15s}
+  .btn-primary:hover{background:#0e6349}
+  .btn-primary svg{width:16px;height:16px}
+  .btn-ghost{color:var(--ink);text-decoration:none;font-weight:500;font-size:16px;padding:14px 8px}
+  .btn-ghost:hover{color:var(--money)}
+  .microcopy{font-size:13.5px;color:var(--ink-faint);margin-top:16px}
+
+  /* ledger signature */
+  .ledger{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 1px 0 var(--line-strong),0 18px 40px -28px rgba(20,24,28,.22);overflow:hidden}
+  .ledger-top{padding:22px 24px;border-bottom:1px dashed var(--line-strong);background:var(--band)}
+  .ledger-cap{font-size:12.5px;color:var(--ink-faint);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:6px}
+  .bank-row{display:flex;align-items:baseline;justify-content:space-between}
+  .bank-num{font-size:34px;font-weight:600}
+  .bank-tag{font-size:12.5px;color:var(--warn);background:var(--warn-soft);padding:4px 9px;border-radius:6px;font-family:'IBM Plex Mono',monospace}
+  .ledger-body{padding:14px 24px 8px}
+  .line{display:flex;justify-content:space-between;padding:9px 0;font-size:15.5px}
+  .line .lbl{color:var(--ink-soft)}
+  .line .val{font-weight:500}
+  .val.pos{color:var(--money)}
+  .val.neg{color:var(--ink)}
+  .rule{border-top:1px solid var(--line-strong);margin:6px 0}
+  .total{display:flex;justify-content:space-between;padding:14px 0 6px;align-items:center}
+  .total .lbl{font-weight:600;font-size:15.5px}
+  .total .val{font-size:19px;font-weight:600}
+  .reconciled{display:flex;align-items:center;justify-content:flex-end;gap:7px;padding:0 24px 20px;color:var(--money);font-size:13.5px;font-weight:500}
+  .reconciled svg{width:15px;height:15px}
+
+  /* sections */
+  section.band{padding:66px 0;border-top:1px solid var(--line)}
+  section.band.tint{background:var(--band)}
+  .kicker{font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:14px}
+  h2{font-size:30px;margin-bottom:14px}
+  .section-lede{font-size:18px;color:var(--ink-soft);max-width:58ch;margin-bottom:40px}
+
+  .pains{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .pain{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px}
+  .pain h3{font-size:19px;margin-bottom:10px}
+  .pain p{font-size:15.5px;color:var(--ink-soft)}
+  .pain .num{font-family:'IBM Plex Mono',monospace;color:var(--warn);font-size:13px;margin-bottom:14px;display:block}
+
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:8px}
+  .step{border-top:2px solid var(--money);padding-top:16px}
+  .step .st-n{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--money);margin-bottom:8px}
+  .step h3{font-size:17px;margin-bottom:6px}
+  .step p{font-size:14.5px;color:var(--ink-soft)}
+
+  /* pricing */
+  .price-wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+  .price-card{background:var(--ink);color:#fff;border-radius:16px;padding:36px}
+  .price-card .plan{font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9fb4ab;margin-bottom:18px}
+  .price-amt{display:flex;align-items:baseline;gap:6px;margin-bottom:8px}
+  .price-amt .big{font-family:'Bitter',Georgia,serif;font-size:50px;font-weight:700}
+  .price-amt .per{color:#9fb4ab;font-size:16px}
+  .price-note{color:#c3d1cc;font-size:14.5px;margin-bottom:24px}
+  .price-card .btn-primary{width:100%;justify-content:center}
+  .refund{font-size:12.5px;color:#9fb4ab;text-align:center;margin-top:14px;font-family:'IBM Plex Mono',monospace}
+  .price-list{list-style:none}
+  .price-list li{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:15.5px;color:var(--ink-soft)}
+  .price-list li:last-child{border-bottom:none}
+  .price-list svg{width:18px;height:18px;color:var(--money);flex:none;margin-top:3px}
+
+  /* waitlist + contact */
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:32px}
+  .panel.center{text-align:center}
+  .panel h3{font-size:20px;margin-bottom:8px}
+  .panel p{color:var(--ink-soft);font-size:15.5px;margin-bottom:20px}
+  .wl-form{display:flex;gap:10px;max-width:440px;margin:0 auto;flex-wrap:wrap}
+  input,textarea{font-family:inherit;font-size:15.5px;padding:13px 15px;border:1px solid var(--line-strong);border-radius:10px;background:var(--paper);color:var(--ink);width:100%}
+  input:focus,textarea:focus{outline:none;border-color:var(--money);box-shadow:0 0 0 3px var(--money-soft)}
+  .wl-form input{flex:1;min-width:200px;width:auto}
+  button[type=submit]{background:var(--ink);color:#fff;border:none;font-family:inherit;font-weight:600;font-size:15.5px;padding:13px 22px;border-radius:10px;cursor:pointer;transition:background .15s}
+  button[type=submit]:hover{background:#000}
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+  .contact-form{display:grid;gap:12px}
+  .contact-form .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  textarea{min-height:120px;resize:vertical}
+  .contact-form button{justify-self:start}
+
+  /* footer */
+  footer{border-top:1px solid var(--line);padding:36px 0 48px;margin-top:20px}
+  .foot-in{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+  .foot-in p{font-size:13px;color:var(--ink-faint)}
+  .foot-in a{color:var(--ink-soft)}
+
+  @media (max-width:820px){
+    .hero-grid,.pains,.price-wrap,.contact-grid{grid-template-columns:1fr;gap:36px}
+    .steps{grid-template-columns:1fr}
+    .contact-form .row{grid-template-columns:1fr}
+    h1{font-size:34px}
+    .hero{padding:48px 0 40px}
+    .nav-links a:not(.nav-cta){display:none}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-in">
+    <a class="brand" href="#"><span class="dot" aria-hidden="true"></span>Payout Match</a>
+    <div class="nav-links">
+      <a href="#pricing">Pricing</a>
+      <a href="#contact">Contact</a>
+      <a class="nav-cta" href="https://buy.stripe.com/aFa3cx64d1zF6Nr7LN9fW00">Get early access</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">For Shopify + Stripe sellers</span>
+      <h1>Your payout never matches your bank. Now you'll know why.</h1>
+      <p class="lede">Every deposit lands as one lumped-together number. Payout Match splits it line by line (sales, fees, refunds, adjustments) in plain English, in two minutes. No accountant, no QuickBooks.</p>
+      <div class="cta-row">
+        <a class="btn-primary" href="https://buy.stripe.com/aFa3cx64d1zF6Nr7LN9fW00">
+          Get early access
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="btn-ghost" href="#waitlist">Just keep me posted</a>
+      </div>
+      <p class="microcopy">$29/month flat. Cancel anytime. Refundable pre-order.</p>
+    </div>
+
+    <div class="ledger" role="img" aria-label="A bank deposit of 4,812 dollars broken down into sales, fees and refunds that add back up to the same amount.">
+      <div class="ledger-top">
+        <div class="ledger-cap">What hits your bank</div>
+        <div class="bank-row">
+          <span class="bank-num mono">$4,812.00</span>
+          <span class="bank-tag">one number?</span>
+        </div>
+      </div>
+      <div class="ledger-body">
+        <div class="line"><span class="lbl">Gross sales</span><span class="val pos mono">+$5,140.00</span></div>
+        <div class="line"><span class="lbl">Processing fees</span><span class="val neg mono">&minus;$210.00</span></div>
+        <div class="line"><span class="lbl">Refunds</span><span class="val neg mono">&minus;$118.00</span></div>
+        <div class="rule"></div>
+        <div class="total"><span class="lbl">Net deposit</span><span class="val mono">$4,812.00</span></div>
+      </div>
+      <div class="reconciled">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Reconciled to the cent
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="band tint">
+  <div class="wrap">
+    <div class="kicker">The problem</div>
+    <h2>Reconciling by hand is miserable</h2>
+    <p class="section-lede">Shopify and Stripe drop sales, fees, refunds and adjustments into your bank as a single figure. At tax time, your 1099-K lines up with nothing.</p>
+    <div class="pains">
+      <div class="pain">
+        <span class="num">01</span>
+        <h3>One opaque number</h3>
+        <p>The deposit never matches what Shopify says you sold, because everything gets bundled together before it reaches the bank. Untangling it eats hours every month.</p>
+      </div>
+      <div class="pain">
+        <span class="num">02</span>
+        <h3>The fixes are built for accountants</h3>
+        <p>A2X and Synder solve it, but they want you on QuickBooks or Xero and run $70+ a month combined. Overkill when all you need is to confirm the deposit is right.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="kicker">How it works</div>
+    <h2>Built for sellers, not bookkeepers</h2>
+    <p class="section-lede">No chart of accounts to set up. No accounting software required. Connect once and get answers.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="st-n">Step 1</div>
+        <h3>Connect Shopify and Stripe</h3>
+        <p>One read-only connection to each. You don't install anything.</p>
+      </div>
+      <div class="step">
+        <div class="st-n">Step 2</div>
+        <h3>We break down every payout</h3>
+        <p>Each deposit split line by line and matched against what actually hit your bank.</p>
+      </div>
+      <div class="step">
+        <div class="st-n">Step 3</div>
+        <h3>Know your number is right</h3>
+        <p>A clear breakdown you can trust at month-end and at tax time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band tint" id="pricing">
+  <div class="wrap">
+    <div class="kicker">Pricing</div>
+    <h2>One flat price</h2>
+    <p class="section-lede">No per-transaction fees. No contract. This is an early-access pre-order: you're reserving your spot while we build.</p>
+    <div class="price-wrap">
+      <div class="price-card">
+        <div class="plan">Early access</div>
+        <div class="price-amt"><span class="big">$29</span><span class="per">/ month</span></div>
+        <p class="price-note">Flat rate. Cancel yourself, anytime.</p>
+        <a class="btn-primary" href="https://buy.stripe.com/aFa3cx64d1zF6Nr7LN9fW00">Reserve early access</a>
+        <p class="refund">Full refund, no questions asked, if we don't ship.</p>
+      </div>
+      <ul class="price-list">
+        <li><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Every payout broken down line by line</li>
+        <li><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Reconciled against your actual bank deposit</li>
+        <li><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>No QuickBooks or Xero required</li>
+        <li><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Founding-member price locked in</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="waitlist">
+  <div class="wrap">
+    <div class="panel center">
+      <h3>Not ready to commit?</h3>
+      <p>Leave your email and we'll write to you when it's live.</p>
+      <form class="wl-form" action="https://formspree.io/f/xdarbdjg" method="POST">
+        <input type="hidden" name="_subject" value="Payouts waitlist signup">
+        <input type="email" name="email" required placeholder="you@yourstore.com" aria-label="Email address">
+        <button type="submit">Join the waitlist</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="band tint" id="contact">
+  <div class="wrap contact-grid">
+    <div>
+      <div class="kicker">Contact</div>
+      <h2>Questions? Ask a human.</h2>
+      <p class="section-lede" style="margin-bottom:0">Wondering if this fits your store, how the refund works, or anything else before you reserve a spot: send a message and you'll get a reply from the founder, usually within a day.</p>
+    </div>
+    <form class="contact-form panel" action="https://formspree.io/f/xdarbdjg" method="POST">
+      <input type="hidden" name="_subject" value="Contact form - Payout Match">
+      <div class="row">
+        <input type="text" name="name" required placeholder="Your name" aria-label="Your name">
+        <input type="email" name="email" required placeholder="you@yourstore.com" aria-label="Email address">
+      </div>
+      <textarea name="message" required placeholder="Your question" aria-label="Your message"></textarea>
+      <button type="submit">Send message</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <a class="brand" href="#"><span class="dot" aria-hidden="true"></span>Payout Match</a>
+    <p>Early-access pre-order. Full refund if we don't ship. <a href="#contact">Contact</a> · © 2026 RETIVEL SL.</p>
+  </div>
+</footer>
+
+<script data-goatcounter="https://payoutmatch.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+</body>
+</html>
